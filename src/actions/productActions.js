@@ -1,10 +1,11 @@
-import axios from "axios";
+import {api} from "../api/api";
 import * as TYPE from "../constants/productConstants";
 
 export const listProducts = () => async (dispatch) => {
   dispatch({ type: TYPE.PRODUCT_LIST_REQUEST });
   try {
-    const { data } = await axios.get("/api/products");
+    const { data } = await api.get("/api/products");
+    // const { data } = await api({url:"/api/products",method:"get"});
     dispatch({ type: TYPE.PRODUCT_LIST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: TYPE.PRODUCT_LIST_FAIL, payload: error.message });
@@ -14,7 +15,7 @@ export const listProducts = () => async (dispatch) => {
 export const detailsProduct = (productId) => async (dispatch) => {
   dispatch({ type: TYPE.PRODUCT_DETAILS_REQUEST, payload: productId });
   try {
-    const { data } = await axios.get(`/api/products/${productId}`);
+    const { data } = await api.get(`/api/products/${productId}`);
     dispatch({ type: TYPE.PRODUCT_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
@@ -34,7 +35,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
     userSignin: { userInfo },
   } = getState();
   try {
-    const { data } = await axios.put(`/api/products/${product._id}`, product, {
+    const { data } = await api.put(`/api/products/${product._id}`, product, {
       headers: { Authorization: `Bearer ${userInfo.token}` },
     });
     dispatch({ type: TYPE.PRODUCT_UPDATE_SUCCESS, payload: data });
@@ -54,7 +55,7 @@ export const deleteProduct = (productId) => async (dispatch, getState) => {
     userSignin: { userInfo },
   } = getState();
   try {
-    const { data } = axios.delete(`/api/products/${productId}`, {
+    const { data } = api.delete(`/api/products/${productId}`, {
       headers: { Authorization: `Bearer ${userInfo.token}` },
     });
     dispatch({ type: TYPE.PRODUCT_DELETE_SUCCESS });
